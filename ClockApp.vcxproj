@@ -1,0 +1,127 @@
+/*
+    Ethan Burnett
+    Chada Tech Clock Project
+*/
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+/* Struct to store time */
+struct ClockTime {
+    int hours;
+    int minutes;
+    int seconds;
+};
+
+/* Function prototypes */
+void displayClocks(const ClockTime& time);
+void displayMenu();
+void addHour(ClockTime& time);
+void addMinute(ClockTime& time);
+void addSecond(ClockTime& time);
+void normalizeTime(ClockTime& time);
+
+/* Displays both clocks */
+void displayClocks(const ClockTime& time) {
+    int hour12 = time.hours % 12;
+    if (hour12 == 0) hour12 = 12;
+
+    string amPm = (time.hours < 12) ? "AM" : "PM";
+
+    cout << "\n**************************     **************************\n";
+    cout << "*     12-Hour Clock      *     *     24-Hour Clock      *\n";
+    cout << "*     "
+        << setw(2) << setfill('0') << hour12 << ":"
+        << setw(2) << time.minutes << ":"
+        << setw(2) << time.seconds << " "
+        << amPm << "       *     *     "
+        << setw(2) << time.hours << ":"
+        << setw(2) << time.minutes << ":"
+        << setw(2) << time.seconds << "         *\n";
+    cout << "**************************     **************************\n";
+}
+
+/* Displays menu options */
+void displayMenu() {
+    cout << "\nMenu:\n";
+    cout << "1 - Add One Hour\n";
+    cout << "2 - Add One Minute\n";
+    cout << "3 - Add One Second\n";
+    cout << "4 - Exit Program\n";
+    cout << "Enter choice: ";
+}
+
+/* Add one hour */
+void addHour(ClockTime& time) {
+    time.hours++;
+    normalizeTime(time);
+}
+
+/* Add one minute */
+void addMinute(ClockTime& time) {
+    time.minutes++;
+    normalizeTime(time);
+}
+
+/* Add one second */
+void addSecond(ClockTime& time) {
+    time.seconds++;
+    normalizeTime(time);
+}
+
+/* Ensures time stays valid */
+void normalizeTime(ClockTime& time) {
+    if (time.seconds >= 60) {
+        time.seconds = 0;
+        time.minutes++;
+    }
+    if (time.minutes >= 60) {
+        time.minutes = 0;
+        time.hours++;
+    }
+    if (time.hours >= 24) {
+        time.hours = 0;
+    }
+}
+
+int main() {
+    ClockTime time;
+    int choice = 0;
+
+    // Get initial time input
+    cout << "Enter hours (0-23): ";
+    cin >> time.hours;
+    cout << "Enter minutes (0-59): ";
+    cin >> time.minutes;
+    cout << "Enter seconds (0-59): ";
+    cin >> time.seconds;
+
+    normalizeTime(time);
+
+    // Program loop
+    while (choice != 4) {
+        displayClocks(time);
+        displayMenu();
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            addHour(time);
+            break;
+        case 2:
+            addMinute(time);
+            break;
+        case 3:
+            addSecond(time);
+            break;
+        case 4:
+            cout << "Exiting program.\n";
+            break;
+        default:
+            cout << "Invalid option. Try again.\n";
+        }
+    }
+
+    return 0;
+}
